@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post(uri: 'transactions',action: [TransactionController::class, 'store']);
+Route::get(uri: 'transactions',action: [TransactionController::class, 'index']);
+Route::get(uri:'transactions/{transaction}',action: [TransactionController::class, 'show']);
+Route::put(uri:'transactions/{transaction}',action: [TransactionController::class, 'update']);
+Route::delete(uri: 'transactions/{transaction}',action: [TransactionController::class, 'delete']);
