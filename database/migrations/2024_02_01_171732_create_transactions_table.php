@@ -16,7 +16,16 @@ return new class extends Migration
             $table->id();
             $table->bigInteger(column: 'amount');
             $table->enum(column: 'type',allowed:  TransactionTypeEnum::values());
+            $table->unsignedBigInteger(column: 'from');
+            $table->unsignedBigInteger(column: 'to')->nullable();
             $table->timestamps();
+
+            $table->index([
+                'from'
+            ]);
+
+            $table->foreign(columns: 'from')->references(columns: 'id')->on(table: 'users');
+            $table->foreign(columns: 'to')->references(columns: 'id')->on(table: 'users');
         });
     }
 

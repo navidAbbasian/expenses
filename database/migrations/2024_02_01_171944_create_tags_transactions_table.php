@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create(table: 'tags_transactions',callback:  function (Blueprint $table) {
-            $table->foreignId(column: 'tag_id')->references(column:'id')->on(table: 'tags')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId(column: 'transaction_id')->references(column: 'id')->on(table: 'transaction')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId(column: 'tag_id')->references(column:'id')->on(table: 'tags')->cascadeOnUpdate();
+            $table->foreignId(column: 'transaction_id')->references(column: 'id')->on(table: 'transactions')->cascadeOnUpdate();
         });
     }
 
