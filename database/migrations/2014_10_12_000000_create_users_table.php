@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create(table: 'users',callback:  function (Blueprint $table) {
             $table->id();
             $table->string(column: 'name');
-            $table->bigInteger(column: 'amount')->default(value: 0);
+            $table->bigInteger(column: 'balance')->default(value: 0);
             $table->timestamps();
         });
     }

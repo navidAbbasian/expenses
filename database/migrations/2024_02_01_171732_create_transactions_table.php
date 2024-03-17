@@ -15,17 +15,19 @@ return new class extends Migration
         Schema::create(table: 'transactions',callback:  function (Blueprint $table) {
             $table->id();
             $table->bigInteger(column: 'amount');
+            $table->string(column: 'description');
             $table->enum(column: 'type',allowed:  TransactionTypeEnum::values());
             $table->unsignedBigInteger(column: 'from');
             $table->unsignedBigInteger(column: 'to')->nullable();
             $table->timestamps();
 
             $table->index([
-                'from'
+                'from',
+                'to'
             ]);
 
-            $table->foreign(columns: 'from')->references(columns: 'id')->on(table: 'users');
-            $table->foreign(columns: 'to')->references(columns: 'id')->on(table: 'users');
+            $table->foreign(columns: 'from')->references(columns: 'id')->on(table: 'banks');
+            $table->foreign(columns: 'to')->references(columns: 'id')->on(table: 'banks');
         });
     }
 
