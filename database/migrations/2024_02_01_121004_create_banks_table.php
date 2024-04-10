@@ -12,9 +12,10 @@ return new class extends Migration {
     {
         Schema::create(table: 'banks', callback: function (Blueprint $table) {
             $table->id();
+            $table->string(column: 'name');
             $table->unsignedBigInteger(column: 'account_owner');
             $table->integer(column: 'account_number');
-            $table->integer(column: 'balance');
+            $table->integer(column: 'balance')->default(0);
             $table->timestamps();
 
             $table->foreign(columns: 'account_owner')->references(columns: 'id')->on(table: 'users')

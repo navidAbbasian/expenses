@@ -13,7 +13,10 @@ class TransactionController extends Controller
     {
         $data = [
             'amount' => $request->amount,
-            'type' => $request->type
+            'description' => $request->description,
+            'type' => $request->type,
+            'from' => $request->from,
+            'to' => $request->has($request->to) ? $request->to : null,
         ];
 
         $tags = $request->tag_ids;
@@ -27,12 +30,12 @@ class TransactionController extends Controller
 
     public function index(): JsonResponse
     {
-        $transactions = Transaction::with(relations: 'tags')->get();
+        $transactions = Transaction::with(relations: 'tags')->where(column: 'from', value: auth()->user()->banks()->id)->get();
 
         return $this->ok($transactions);
     }
 
-    public function update(TransactionRequest $request,  Transaction $transaction): JsonResponse
+    public function update(TransactionRequest $request, Transaction $transaction): JsonResponse
     {
         $data = [
             'amount' => $request->amount,

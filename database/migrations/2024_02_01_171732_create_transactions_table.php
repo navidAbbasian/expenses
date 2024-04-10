@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create(table: 'transactions',callback:  function (Blueprint $table) {
             $table->id();
-            $table->bigInteger(column: 'amount');
+            $table->bigInteger(column: ' ');
             $table->string(column: 'description');
             $table->enum(column: 'type',allowed:  TransactionTypeEnum::values());
             $table->unsignedBigInteger(column: 'from');

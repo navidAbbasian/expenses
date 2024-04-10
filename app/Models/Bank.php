@@ -11,6 +11,12 @@ class Bank extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'account_number',
+        'account_owner'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(related: User::class, foreignKey: 'account_owner', ownerKey: 'id');

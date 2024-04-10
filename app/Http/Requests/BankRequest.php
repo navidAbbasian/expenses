@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UserRegisterRequest extends FormRequest
+class BankRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,9 @@ class UserRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'number' => ['required', 'string', 'min:11', 'max:11'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required'],
+            "name" => ["required", "string", "max:100"],
+            "account_owner" => ["required", Rule::exists("users", "id")],
+            "account_number" => ["required", "numeric"],
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Enums\TransactionTypeEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use function Laravel\Prompts\table;
 
 class TransactionRequest extends FormRequest
 {
@@ -26,7 +27,10 @@ class TransactionRequest extends FormRequest
     {
         return [
             'amount' => ['required'],
-            'type' => ['required', Rule::in(TransactionTypeEnum::values())]
+            'description' => ['required', 'string'],
+            'type' => ['required', Rule::in(TransactionTypeEnum::values())],
+            'from' => ['required', Rule::exists(table:'banks',column:  'id')],
+            'to' => [Rule::exists(table:'banks',column:  'id')],
         ];
     }
 }
