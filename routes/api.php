@@ -22,23 +22,20 @@ Route::post('login', [LoginUserController::class, 'store']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
-//    Route::prefix(prefix: 'transactions')->controller(controller: TransactionController::class)->group(function () {
-//        Route::post(uri: '', action: 'store');
-//        Route::get(uri: '', action: 'index');
-//        Route::get(uri: '/{transaction}', action: 'show');
-//        Route::put(uri: '/{transaction}', action: 'update');
-//        Route::delete(uri: '/{transaction}', action: 'delete');
-//    });
+    Route::prefix( 'transactions')->controller( TransactionController::class)->group(function () {
+        Route::post( '',  'store');
+        Route::get( '',  'index');
+        Route::get( '/{transaction}', 'show');
+        Route::put( '/{transaction}',  'update');
+        Route::delete( '/{transaction}',  'delete');
+    });
 
-    Route::post(uri: 'transactions', action: [TransactionController::class, 'store']);
-    Route::get(uri: 'transactions', action: [TransactionController::class, 'index']);
-    Route::get(uri: 'transactions/{transaction}', action: [TransactionController::class, 'show']);
-    Route::put(uri: 'transactions/{transaction}', action: [TransactionController::class, 'update']);
-    Route::delete(uri: 'transactions/{transaction}', action: [TransactionController::class, 'delete']);
+    Route::prefix( 'banks')->controller( BankController::class)->group(function () {
+        Route::post( '',  'store');
+        Route::get( '',  'index');
+        Route::get( '/{bank}', 'show');
+        Route::put( '/{bank}',  'update');
+        Route::delete( '/{bank}',  'delete');
+    });
 
-    Route::post(uri: 'banks', action: [BankController::class, 'store']);
-    Route::get(uri: 'banks', action: [BankController::class, 'index']);
-    Route::get(uri: 'banks/{bank}', action: [BankController::class, 'show']);
-    Route::put(uri: 'banks/{bank}', action: [BankController::class, 'update']);
-    Route::delete(uri: 'banks/{bank}', action: [BankController::class, 'delete']);
 });
