@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string(column: 'number');
             $table->string(column: 'email');
             $table->string(column: 'password');
-            $table->bigInteger(column: 'balance')->default(value: 0);
             $table->timestamps();
         });
     }

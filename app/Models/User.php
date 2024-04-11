@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(related: Bank::class, foreignKey: 'account_owner', localKey: 'id');
     }
+
+    public function userBalance(): int
+    {
+        return auth()->user()->banks()->sum('balance');
+    }
 }

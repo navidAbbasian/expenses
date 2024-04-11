@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
+use App\Models\Bank;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,14 +26,18 @@ class TransactionController extends Controller
 
         $transaction->tags()->attach($tags);
 
+        $bank = Bank::query()->find($request->from);
+        $bank->balance += $transaction->amount;
+        $bank->save();
+
         return $this->created($transaction);
     }
 
-    public function index(): JsonResponse
+    public function index(Transaction $transactions): JsonResponse
     {
-        $transactions = Transaction::with(relations: 'tags')->where(column: 'from', value: auth()->user()->banks()->id)->get();
+//        $transactions = new Transaction();
 
-        return $this->ok($transactions);
+        return $this->ok($transactions->userTransactions());
     }
 
     public function update(TransactionRequest $request, Transaction $transaction): JsonResponse

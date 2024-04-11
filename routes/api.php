@@ -4,6 +4,7 @@ use App\Http\Controllers\auth\LoginUserController;
 use App\Http\Controllers\auth\RegisterUserController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,8 @@ Route::post('register', [RegisterUserController::class, 'store']);
 Route::post('login', [LoginUserController::class, 'store']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+
+    Route::get('/user', [UserController::class, 'show']);
 
     Route::prefix( 'transactions')->controller( TransactionController::class)->group(function () {
         Route::post( '',  'store');

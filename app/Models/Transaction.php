@@ -15,15 +15,25 @@ class Transaction extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(related: Tag::class, table: 'tags_transactions',foreignPivotKey:  'transaction_id',relatedPivotKey:  'tag_id');
+        return $this->belongsToMany(related: Tag::class, table: 'tags_transactions', foreignPivotKey: 'transaction_id', relatedPivotKey: 'tag_id');
     }
 
     public function fromBank(): BelongsTo
     {
-        return $this->belongsTo(related: Bank::class,foreignKey:  'from' ,ownerKey:  'id');
+        return $this->belongsTo(related: Bank::class, foreignKey: 'from', ownerKey: 'id');
     }
+
     public function toBank(): BelongsTo
     {
-        return $this->belongsTo(related: Bank::class,foreignKey:  'to' ,ownerKey:  'id');
+        return $this->belongsTo(related: Bank::class, foreignKey: 'to', ownerKey: 'id');
+    }
+
+    public function userTransactions(): array
+    {
+        $banks = Bank::query()->where('account_owner', auth()->user()->id)->get();
+        for ($i = 0; $i < count($banks); $i++) {
+            $transactions[$i] = Transaction::query()->where('from', $banks[$i]->id)->with('tags')->get();
+        }
+        return $transactions;
     }
 }
