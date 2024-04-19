@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\LoginUserController;
 use App\Http\Controllers\auth\RegisterUserController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get( '/{bank}', 'show');
         Route::put( '/{bank}',  'update');
         Route::delete( '/{bank}',  'delete');
+    });
+
+    Route::prefix( 'tags')->controller( TagController::class)->group(function () {
+        Route::post( '',  'store');
+        Route::get( '',  'index');
+        Route::get( '/{tag}', 'show');
+        Route::put( '/{tag}',  'update');
+        Route::delete( '/{tag}',  'delete');
     });
 
 });
