@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -53,5 +54,10 @@ class User extends Authenticatable
     public function userBalance(): int
     {
         return auth()->user()->banks()->sum('balance');
+    }
+
+    public function getSumTransactionsTags(Request $request)
+    {
+
     }
 }
