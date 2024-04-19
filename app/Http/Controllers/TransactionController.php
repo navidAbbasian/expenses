@@ -7,18 +7,23 @@ use App\Models\Bank;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
     public function store(TransactionRequest $request): JsonResponse
     {
+
+        DB::beginTransaction();
         $data = [
             'amount' => $request->amount,
             'description' => $request->description,
             'type' => $request->type,
-            'from' => $request->from,
-            'to' => $request->has($request->to) ? $request->to : null,
+            'from' => ($request->has('from')) ? $request->from : null,
+            'to' => ($request->has('to')) ? $request->to : null,
         ];
+
 
         $tags = $request->tag_ids;
 
@@ -26,10 +31,48 @@ class TransactionController extends Controller
 
         $transaction->tags()->attach($tags);
 
-        $bank = Bank::query()->find($request->from);
-        $bank->balance += $transaction->amount;
-        $bank->save();
 
+        // change bank balance
+
+        if ($request->type == 'income') {
+            $bank = Bank::query()->find($request->to);
+
+            $bank->balance += $transaction->amount;
+            $bank->save();
+        }
+
+        if ($request->type == 'cost') {
+            $bank = Bank::query()->find($request->from);
+            if ($request->amount <= $bank->balance) {
+                $bank->balance -= $transaction->amount;
+                $bank->save();
+            } else {
+                throw ValidationException::withMessages(
+                    [
+                        'amount' => 'از سقف زدی بالا'
+                    ]);
+            }
+
+        }
+
+        if ($request->type == 'cart_to_cart') {
+            $toBank = Bank::query()->find($request->to);
+            $fromBank = Bank::query()->find($request->from);
+
+            if ($request->amount <= $fromBank->balance) {
+                $fromBank->balance -= $transaction->amount;
+                $toBank->balance += $transaction->amount;
+                $toBank->save();
+                $fromBank->save();
+            } else {
+                throw ValidationException::withMessages(
+                    [
+                        'amount' => 'از سقف زدی بالا'
+                    ]);
+            }
+        }
+
+        DB::commit();
         return $this->created($transaction);
     }
 

@@ -13,6 +13,8 @@ class Transaction extends Model
 
     protected $guarded = [];
 
+    protected $with = ['tags'];
+
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(related: Tag::class, table: 'tags_transactions', foreignPivotKey: 'transaction_id', relatedPivotKey: 'tag_id');

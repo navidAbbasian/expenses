@@ -27,10 +27,10 @@ class TransactionRequest extends FormRequest
     {
         return [
             'amount' => ['required'],
-            'description' => ['required', 'string'],
+            'description' => ['string'],
             'type' => ['required', Rule::in(TransactionTypeEnum::values())],
-            'from' => ['required', Rule::exists(table:'banks',column:  'id')],
-            'to' => [Rule::exists(table:'banks',column:  'id')],
+            'from' => [Rule::exists(table: 'banks', column: 'id')],
+            'to' => [Rule::exists(table: 'banks', column: 'id')],
         ];
     }
 }
