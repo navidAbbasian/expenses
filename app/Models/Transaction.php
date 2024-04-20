@@ -34,7 +34,7 @@ class Transaction extends Model
     {
         $banks = Bank::query()->where('account_owner', auth()->user()->id)->get();
         for ($i = 0; $i < count($banks); $i++) {
-            $transactions[$i] = Transaction::query()->where('from', $banks[$i]->id)->with('tags')->get();
+            $transactions[$i] = Transaction::query()->where('to', $banks[$i]->id)->orWhere('from', $banks[$i]->id)->with('tags')->get();
         }
         return $transactions;
     }

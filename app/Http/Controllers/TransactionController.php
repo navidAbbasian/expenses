@@ -78,9 +78,6 @@ class TransactionController extends Controller
 
     public function index(Transaction $transactions): JsonResponse
     {
-        dd($transactions->tags()->get());
-//        $transactions = new Transaction();
-
         return $this->ok($transactions->userTransactions());
     }
 
