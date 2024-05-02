@@ -21,7 +21,7 @@ class Tag extends Model
 
     public function getSumTagTransactionAttribute()
     {
-        return $this->transactions()->sum('amount');
+        return $this->transactions()->where('type', 'income')->sum('amount') -  $this->transactions()->where('type', 'cost')->sum('amount');
 //        $tags = Tag::all();
 //        for ($i = 0; $i <count($tags) ; $i++) {
 //            $tagsTransactions[$i] = $tags[$i]->transactions()->sum('amount');
