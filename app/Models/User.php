@@ -57,8 +57,4 @@ class User extends Authenticatable
         return auth()->user()->banks()->sum('balance');
     }
 
-    public function getSumTransactionsTagsAttribute(Request $request)
-    {
-
-    }
 }

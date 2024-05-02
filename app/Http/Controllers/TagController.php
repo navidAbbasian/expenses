@@ -26,6 +26,7 @@ class TagController extends Controller
 
     public function show(Tag $tag)
     {
+        $tag['balance'] = $tag->getSumTagTransactionAttribute();
         return $this->ok($tag);
     }
 
