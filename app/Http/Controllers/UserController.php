@@ -9,7 +9,6 @@ class UserController extends Controller
     public function show()
     {
         $user = auth()->user();
-        $user['balance'] = $user->userBalance();
         return $this->ok($user);
     }
 }
