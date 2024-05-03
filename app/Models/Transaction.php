@@ -38,5 +38,4 @@ class Transaction extends Model
         }
         return $transactions[0]->toArray();
     }
-
 }

@@ -12,24 +12,17 @@ class Tag extends Model
 
     protected $guarded = [];
 
-//    protected $appends = ['sum_tag_transaction'];
-
     public function transactions(): BelongsToMany
     {
-        return $this->belongsToMany(related: Transaction::class,table: 'tags_transactions',foreignPivotKey: 'tag_id',relatedPivotKey: 'transaction_id');
+        return $this->belongsToMany(related: Transaction::class,
+            table: 'tags_transactions',
+            foreignPivotKey: 'tag_id',
+            relatedPivotKey: 'transaction_id');
     }
 
     public function getSumTagTransactionAttribute()
     {
-        return $this->transactions()->where('type', 'income')->sum('amount') -  $this->transactions()->where('type', 'cost')->sum('amount');
-//        $tags = Tag::all();
-//        for ($i = 0; $i <count($tags) ; $i++) {
-//            $tagsTransactions[$i] = $tags[$i]->transactions()->sum('amount');
-//            $tagsName[$i] = $tags[$i]->name;
-//            $tagBalance[$i] = [
-//                $tagsName[$i] => $tagsTransactions[$i]
-//            ];
-//        }
-//        return $tagBalance;
+        return $this->transactions()->where('type', 'income')->sum('amount') -
+            $this->transactions()->where('type', 'cost')->sum('amount');
     }
 }

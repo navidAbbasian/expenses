@@ -56,5 +56,4 @@ class User extends Authenticatable
     {
         return auth()->user()->banks()->sum('balance');
     }
-
 }
