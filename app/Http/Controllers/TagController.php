@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TagRequest;
 use App\Models\Tag;
+use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
@@ -17,10 +18,13 @@ class TagController extends Controller
         return $this->created($tag);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $tags = Tag::all();
-        return $this->ok($tags);
+        $tags = Tag::query();
+
+        $pagination = $this->pagination($tags, $request);
+
+        return $this->ok($pagination);
     }
 
 

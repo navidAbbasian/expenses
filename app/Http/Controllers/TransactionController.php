@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
+
 class TransactionController extends Controller
 {
     public function store(TransactionRequest $request): JsonResponse
@@ -59,9 +60,10 @@ class TransactionController extends Controller
         return $this->created($transaction);
     }
 
-    public function index(Transaction $transactions): JsonResponse
+    public function index(Transaction $transactions, Request $request): JsonResponse
     {
-        return $this->ok($transactions->userTransactions());
+        $pagination = $this->pagination($transactions->userTransactions(), $request);
+        return $this->ok($pagination);
     }
 
     public function update(TransactionRequest $request, Transaction $transaction): JsonResponse

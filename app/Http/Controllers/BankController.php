@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class BankController extends Controller
 {
-    public function store(BankRequest $request)
+    public function store(BankRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = [
             'name' => $request->name,
@@ -21,19 +21,23 @@ class BankController extends Controller
         return $this->created($bank);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-//        $banks = Bank::all();
-        $banks=auth()->user()->banks()->get();
 
-        return $this->ok($banks);
+        $banks = auth()->user()->banks();
+
+        $pagination = $this->pagination($banks, $request);
+
+        return $this->ok($pagination);
     }
 
-    public function show(Bank $bank){
+    public function show(Bank $bank): \Illuminate\Http\JsonResponse
+    {
         return $this->ok($bank);
     }
 
-    public function update(BankRequest $request, Bank $bank){
+    public function update(BankRequest $request, Bank $bank): \Illuminate\Http\JsonResponse
+    {
         $data = [
             'name' => $request->name,
             'account_number' => $request->account_number,
@@ -44,7 +48,8 @@ class BankController extends Controller
         return $this->ok($bank);
     }
 
-    public function delete(Bank $bank){
+    public function delete(Bank $bank): \Illuminate\Http\JsonResponse
+    {
         $bank->delete();
         return $this->noContent();
     }

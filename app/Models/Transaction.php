@@ -30,12 +30,12 @@ class Transaction extends Model
         return $this->belongsTo(related: Bank::class, foreignKey: 'to', ownerKey: 'id');
     }
 
-    public function userTransactions(): array
+    public function userTransactions()
     {
         $banks = Bank::query()->where('account_owner', auth()->user()->id)->get();
         for ($i = 0; $i < count($banks); $i++) {
-            $transactions[$i] = Transaction::query()->where('to', $banks[$i]->id)->orWhere('from', $banks[$i]->id)/*->with('tags')*/->get();
+            $transactions[$i] = Transaction::query()->where('to', $banks[$i]->id)->orWhere('from', $banks[$i]->id)/*->with('tags')*/;
         }
-        return $transactions[0]->toArray();
+        return $transactions[0];
     }
 }
