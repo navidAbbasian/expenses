@@ -55,23 +55,6 @@ class TransactionController extends Controller
 
         }
 
-//        if ($request->type == 'cart_to_cart') {
-//            $toBank = Bank::query()->find($request->to);
-//            $fromBank = Bank::query()->find($request->from);
-//
-//            if ($request->amount <= $fromBank->balance) {
-//                $fromBank->balance -= $transaction->amount;
-//                $toBank->balance += $transaction->amount;
-//                $toBank->save();
-//                $fromBank->save();
-//            } else {
-//                throw ValidationException::withMessages(
-//                    [
-//                        'amount' => 'از سقف زدی بالا'
-//                    ]);
-//            }
-//        }
-
         DB::commit();
         return $this->created($transaction);
     }
@@ -104,5 +87,9 @@ class TransactionController extends Controller
         $transaction->delete();
 
         return $this->noContent();
+    }
+    public function show(Transaction $transaction): JsonResponse
+    {
+        return $this->ok($transaction);
     }
 }
