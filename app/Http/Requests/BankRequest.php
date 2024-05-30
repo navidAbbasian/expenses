@@ -25,7 +25,6 @@ class BankRequest extends FormRequest
     {
         return [
             "name" => ["required", "string", "max:100"],
-            "account_owner" => ["required", Rule::exists("users", "id")],
             "account_number" => ["required", "numeric"],
         ];
     }

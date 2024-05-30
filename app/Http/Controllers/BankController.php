@@ -13,7 +13,7 @@ class BankController extends Controller
         $data = [
             'name' => $request->name,
             'account_number' => $request->account_number,
-            'account_owner' => $request->account_owner,
+            'account_owner' => auth()->id(),
         ];
 
         $bank = Bank::create($data);
@@ -41,7 +41,7 @@ class BankController extends Controller
         $data = [
             'name' => $request->name,
             'account_number' => $request->account_number,
-            'account_owner' => $request->account_owner,
+            'account_owner' => auth()->id(),
         ];
         $bank->update($data);
 
