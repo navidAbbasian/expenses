@@ -45,14 +45,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    protected $appends = ['user_balance'];
 
     public function banks(): HasMany
     {
         return $this->hasMany(related: Bank::class, foreignKey: 'account_owner', localKey: 'id');
     }
 
-    public function getUserBalanceAttribute(): int
+    public function userBalance(): int
     {
         return auth()->user()->banks()->sum('balance');
     }
