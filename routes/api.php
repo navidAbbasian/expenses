@@ -25,6 +25,7 @@ Route::post('login', [LoginUserController::class, 'store']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::get('/user', [UserController::class, 'show']);
+    Route::get('/users', [UserController::class, 'index']);
 
     Route::prefix( 'transactions')->controller( TransactionController::class)->group(function () {
         Route::post( '',  'store');
