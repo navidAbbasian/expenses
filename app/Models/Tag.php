@@ -12,6 +12,8 @@ class Tag extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['TagsTransactionBalance'];
+
     public function transactions(): BelongsToMany
     {
         return $this->belongsToMany(related: Transaction::class,
@@ -20,7 +22,7 @@ class Tag extends Model
             relatedPivotKey: 'transaction_id');
     }
 
-    public function getSumTagTransactionAttribute()
+    public function getTagsTransactionBalanceAttribute()
     {
         return $this->transactions()->where('type', 'income')->sum('amount') -
             $this->transactions()->where('type', 'cost')->sum('amount');
