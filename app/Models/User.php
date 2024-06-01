@@ -53,6 +53,10 @@ class User extends Authenticatable
 
     public function userBalance(): int
     {
-        return auth()->user()->banks()->sum('balance');
+        if (auth()->user()->banks())
+            return auth()->user()->banks()->sum('balance');
+        else {
+            return 0;
+        }
     }
 }

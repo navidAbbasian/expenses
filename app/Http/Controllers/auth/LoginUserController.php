@@ -25,12 +25,6 @@ class LoginUserController extends Controller
         $data['token'] = $user->createToken('auth_token')->plainTextToken;
         $data['user'] = $user;
 
-        $response = [
-            'status' => 'success',
-            'message' => 'User is logged in successfully.',
-            'data' => $data,
-        ];
-
-        return response()->json($response, 200);
+        return $this->ok($data);
     }
 }
