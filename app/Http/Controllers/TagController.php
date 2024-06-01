@@ -38,7 +38,7 @@ class TagController extends Controller
     {
         $data = [
             'name' => $request->name,
-            'description' => $request->has($request->description) ? $request->description : null,
+            'description' => $request->has('description') ? $request->description : $tag->description,
         ];
 
         $tag->update($data);
