@@ -86,10 +86,21 @@ class TransactionController extends Controller
 
     public function delete(Transaction $transaction): JsonResponse
     {
+        if ($transaction->type == 'cost') {
+            $bank = Bank::query()->find($transaction->from);
+            $bank->balance += $transaction->amount;
+            $bank->save();
+        } else if ($transaction->type == 'income') {
+            $bank = Bank::query()->find($transaction->to);
+            $bank->balance -= $transaction->amount;
+            $bank->save();
+        }
+
         $transaction->delete();
 
         return $this->noContent();
     }
+
     public function show(Transaction $transaction): JsonResponse
     {
         return $this->ok($transaction);
