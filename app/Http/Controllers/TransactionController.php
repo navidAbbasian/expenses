@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
+use App\Http\Resources\TransactionCollection;
 use App\Http\Resources\TransactionResource;
 use App\Models\Bank;
 use App\Models\Transaction;
@@ -64,7 +65,7 @@ class TransactionController extends Controller
     public function index(Transaction $transactions, Request $request): JsonResponse
     {
         $pagination = $this->pagination($transactions->userTransactions(), $request);
-        return $this->ok(TransactionResource::collection($pagination));
+        return $this->ok((new TransactionCollection($pagination))->resource);
     }
 
     public function update(TransactionRequest $request, Transaction $transaction): JsonResponse

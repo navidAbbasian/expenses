@@ -22,7 +22,7 @@ trait ExpandedResponse
      */
     public function messageResponse($status, $message, $response = null): JsonResponse
     {
-        if ($message) {
+        if (!$message) {
             throw new Exception('The message is required.');
         }
 
