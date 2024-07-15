@@ -18,15 +18,34 @@ class CreateTransaction extends CreateRecord
     {
         $tags = Tag::pluck('name', 'id');
         $banks = Bank::pluck('name', 'id');
+
         return $form
             ->schema([
                 TextInput::make('amount')->required(),
                 TextInput::make('fee')->required(),
                 TextInput::make('description'),
-                TextInput::make('type')->required(),
+                Select::make('type')->options([
+                    'income',
+                    'cost'
+                ])->required(),
                 Select::make('from')->options($banks),
                 Select::make('to')->options($banks),
-//                Select::make('tags_ids')->options($tags),
+                Select::make('tags')->multiple()->options($tags)
             ]);
+
+    }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $tags = $data['tags'] ?? [];
+        unset($data['tags']);
+
+        $this->data['tags'] = $tags;
+
+        return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $this->record->tags()->attach($this->data['tags']);
     }
 }
