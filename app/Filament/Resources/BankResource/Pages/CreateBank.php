@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\BankResource\Pages;
 
 use App\Filament\Resources\BankResource;
+use App\Models\User;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Actions;
 use Filament\Resources\Form;
@@ -15,11 +17,13 @@ class CreateBank extends CreateRecord
 
     public function form(Form $form): Form
     {
+        $users = User::pluck('name','id' );
+
         return $form
             ->schema([
                 TextInput::make('name')->required(),
                 TextInput::make('account_number')->required(),
-                TextInput::make('account_owner')->required(),
+                Select::make('account_owner')->options($users)->required(),
             ]);
     }
 }

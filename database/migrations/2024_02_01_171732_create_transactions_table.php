@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create(table: 'transactions',callback:  function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger(column: 'user_id');
             $table->bigInteger(column: 'amount');
             $table->integer(column: 'fee')->default(700);
             $table->string(column: 'description')->nullable();
@@ -27,8 +28,9 @@ return new class extends Migration
                 'to'
             ]);
 
-            $table->foreign(columns: 'from')->references(columns: 'id')->on(table: 'banks');
-            $table->foreign(columns: 'to')->references(columns: 'id')->on(table: 'banks');
+            $table->foreign(columns: 'from')->references(columns: 'id')->on(table: 'banks')->nullOnDelete();
+            $table->foreign(columns: 'to')->references(columns: 'id')->on(table: 'banks')->nullOnDelete();
+            $table->foreign(columns: 'user_id')->references(columns: 'id')->on(table: 'users');
         });
     }
 

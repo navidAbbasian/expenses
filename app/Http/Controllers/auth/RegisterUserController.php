@@ -23,7 +23,7 @@ class RegisterUserController extends Controller
 
 
         $data['token'] = $user->createToken('auth_token')->plainTextToken;
-        $data['user'] = $user;
+//        $data['user'] = $user;
 
         return $this->ok($data);
     }

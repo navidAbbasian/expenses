@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create(table: 'tags',callback:  function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger(column: 'user_id');
             $table->string(column: 'name');
             $table->string(column:'description')->nullable();
             $table->timestamps();
+
+            $table->foreign(columns: 'user_id')->references(columns: 'id')->on(table: 'users');
         });
     }
 

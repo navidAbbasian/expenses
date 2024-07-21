@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -46,15 +44,17 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = ['user_balance'];
+
     public function banks(): HasMany
     {
         return $this->hasMany(related: Bank::class, foreignKey: 'account_owner', localKey: 'id');
     }
 
-    public function userBalance(): int
+    public function getUserBalanceAttribute(): int
     {
-        if (auth()->user()->banks())
-            return auth()->user()->banks()->sum('balance');
+        if ($this->banks())
+            return $this->banks()->sum('balance');
         else {
             return 0;
         }
