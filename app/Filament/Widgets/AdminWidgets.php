@@ -35,7 +35,7 @@ class AdminWidgets extends BaseWidget
     protected function getCards(): array
     {
         return [
-            Card::make('تعداد تراکنش های روز', Transaction::whereDate('created_at', today())->count()),
+            Card::make('تعداد تراکنش های روز', Transaction::whereDate('created_at', today())->where('user_id', auth()->id())->count()),
             ];
     }
 }
