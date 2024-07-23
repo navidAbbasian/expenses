@@ -61,7 +61,7 @@ return [
     |
     */
 
-    'home_url' => '/admin',
+    'home_url' => '/',
 
     /*
     |--------------------------------------------------------------------------
@@ -227,13 +227,13 @@ return [
         'actions' => [
             'modal' => [
                 'actions' => [
-                    'alignment' => 'left',
+                    'alignment' => 'right',
                 ],
             ],
         ],
         'forms' => [
             'actions' => [
-                'alignment' => 'left',
+                'alignment' => 'right',
                 'are_sticky' => false,
             ],
             'have_inline_labels' => false,
