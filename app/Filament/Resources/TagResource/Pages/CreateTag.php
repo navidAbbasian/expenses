@@ -16,8 +16,8 @@ class CreateTag extends CreateRecord
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('description')
+                TextInput::make('name')->required()->label('نام'),
+                TextInput::make('description')->label('توضیحات')
             ]);
     }
 }

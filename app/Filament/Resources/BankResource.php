@@ -5,20 +5,20 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BankResource\Pages;
 use App\Filament\Resources\BankResource\RelationManagers;
 use App\Models\Bank;
-use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BankResource extends Resource
 {
     protected static ?string $model = Bank::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationLabel = 'بانک ها';
+    protected static ?string $modelLabel = 'بانک';
+    protected static ?string $pluralLabel = 'بانک ها';
 
     public static function form(Form $form): Form
     {
@@ -32,10 +32,10 @@ class BankResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('account_number'),
-                TextColumn::make('account_owner'),
-                TextColumn::make('balance'),
+                TextColumn::make('name')->label('نام'),
+                TextColumn::make('account_number')->label('شماره حساب'),
+                TextColumn::make('account_owner')->label('ضاحب حساب'),
+                TextColumn::make('balance')->label('موجودی'),
             ])
             ->filters([
                 //

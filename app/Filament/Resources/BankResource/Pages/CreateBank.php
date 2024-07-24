@@ -21,9 +21,9 @@ class CreateBank extends CreateRecord
 
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('account_number')->required(),
-                Select::make('account_owner')->options($users)->required(),
+                TextInput::make('name')->required()->label('نام'),
+                TextInput::make('account_number')->required()->label('شماره حساب'),
+                Select::make('account_owner')->options($users)->required()->label('صاحب حساب'),
             ]);
     }
 }

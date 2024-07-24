@@ -22,16 +22,16 @@ class CreateTransaction extends CreateRecord
 
         return $form
             ->schema([
-                TextInput::make('amount')->required(),
-                TextInput::make('fee')->required(),
-                TextInput::make('description'),
+                TextInput::make('amount')->required()->label('فی'),
+                TextInput::make('fee')->required()->label('مالیات'),
+                TextInput::make('description')->label('توضیحات'),
                 Select::make('type')->options([
                     'income' => 'income',
                     'cost' => 'cost'
-                ])->required(),
-                Select::make('from')->options($banks),
-                Select::make('to')->options($banks),
-                Select::make('tags')->multiple()->options($tags)
+                ])->required()->label('نوع'),
+                Select::make('from')->options($banks)->label('از حساب'),
+                Select::make('to')->options($banks)->label('به حساب'),
+                Select::make('tags')->multiple()->options($tags)->label('برچسب ها')
             ]);
 
     }

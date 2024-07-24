@@ -23,8 +23,8 @@ class EditTag extends EditRecord
     {
         return $form
             ->schema([
-                TextInput::make('name'),
-                TextInput::make('description'),
+                TextInput::make('name')->label('نام'),
+                TextInput::make('description')->label('توضیحات'),
             ]);
     }
 }

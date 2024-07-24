@@ -15,18 +15,21 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationLabel = 'تراکنش ها';
+    protected static ?string $modelLabel = 'تراکنش';
+    protected static ?string $pluralLabel = 'تراکنش ها';
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('amount'),
-                TextColumn::make('fee'),
-                TextColumn::make('description'),
-                TextColumn::make('type'),
-                TextColumn::make('from'),
-                TextColumn::make('to'),
-                TextColumn::make('tags.name'),
+                TextColumn::make('amount')->label('فی'),
+                TextColumn::make('fee')->label('مالیات'),
+                TextColumn::make('description')->label('توضیحات'),
+                TextColumn::make('type')->label('نوع'),
+                TextColumn::make('from')->label('از حساب'),
+                TextColumn::make('to')->label('به حساب'),
+                TextColumn::make('tags.name')->label('برچسب ها'),
             ])
             ->filters([
                 //

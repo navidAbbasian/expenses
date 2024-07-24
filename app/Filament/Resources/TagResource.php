@@ -19,7 +19,9 @@ class TagResource extends Resource
     protected static ?string $model = Tag::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-
+    protected static ?string $navigationLabel = 'برچسب ها';
+    protected static ?string $modelLabel = 'برچسب';
+    protected static ?string $pluralLabel = 'برچسب ها';
     public static function form(Form $form): Form
     {
         return $form
@@ -32,9 +34,9 @@ class TagResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('description'),
-                TextColumn::make('TagsTransactionBalance'),
+                TextColumn::make('name')->label('نام'),
+                TextColumn::make('description')->label('توضیحات'),
+                TextColumn::make('TagsTransactionBalance')->label('موجودی'),
             ])
             ->filters([
                 //

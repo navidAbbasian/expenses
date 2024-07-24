@@ -27,12 +27,12 @@ class EditTransaction extends EditRecord
 
         return $form
             ->schema([
-                TextInput::make('amount')->required(),
-                TextInput::make('fee')->required(),
-                TextInput::make('description'),
-                TextInput::make('type')->required(),
-                Select::make('from')->options($banks),
-                Select::make('to')->options($banks),
+                TextInput::make('amount')->required()->label('فی'),
+                TextInput::make('fee')->required()->label('مالیات'),
+                TextInput::make('description')->label('توضیحات'),
+                TextInput::make('type')->required()->label('نوع'),
+                Select::make('from')->options($banks)->label('از حساب'),
+                Select::make('to')->options($banks)->label('به حساب'),
             ]);
     }
 }

@@ -23,9 +23,9 @@ class EditBank extends EditRecord
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('account_number')->required(),
-                TextInput::make('account_owner')->required(),
+                TextInput::make('name')->required()->label('نام '),
+                TextInput::make('account_number')->required()->label('شماره حساب'),
+                TextInput::make('account_owner')->required()->label('صاحب حساب'),
             ]);
     }
 }

@@ -23,10 +23,10 @@ class EditUser extends EditRecord
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('number')->required(),
-                TextInput::make('email')->email(),
-                TextInput::make('password')->password()->required(),
+                TextInput::make('name')->required()->label('نام'),
+                TextInput::make('number')->required()->label('شماره'),
+                TextInput::make('email')->email()->label('ایمیل'),
+                TextInput::make('password')->password()->required()->label('رمز'),
             ]);
     }
 }
