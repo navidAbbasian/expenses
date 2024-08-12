@@ -2,28 +2,21 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Actions\Auth\RegisterAction;
+use App\DTOs\UserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRegisterRequest;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class RegisterUserController extends Controller
 {
+    public function __construct(protected RegisterAction $registerAction)
+    {
+    }
+
     public function store(UserRegisterRequest $request): JsonResponse
     {
-
-
-        $user = User::create([
-            'name' => $request->name,
-            'number' => $request->number,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-
-        $data['token'] = $user->createToken('auth_token')->plainTextToken;
-//        $data['user'] = $user;
+        $data = $this->registerAction->run(userDTO: UserDTO::fromRequest($request));
 
         return $this->ok($data);
     }

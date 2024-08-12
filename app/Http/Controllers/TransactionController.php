@@ -2,109 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TransactionRequest;
+use App\Actions\Transaction\CreateTransactionAction;
+use App\Actions\Transaction\DeleteTransactionAction;
+use App\DTOs\TransactionDTO;
+use App\Http\Requests\CreateTransactionRequest;
 use App\Http\Resources\TransactionCollection;
 use App\Http\Resources\TransactionResource;
-use App\Models\Bank;
 use App\Models\Transaction;
+use App\Repositories\TransactionRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class TransactionController extends Controller
 {
-    public function store(TransactionRequest $request): JsonResponse
+    public function __construct(protected CreateTransactionAction $createTransactionAction,
+                                protected DeleteTransactionAction $deleteTransactionAction,
+                                protected TransactionRepository $transactionRepository)
     {
-
-        DB::beginTransaction();
-        $data = [
-            'amount' => $request->amount,
-            'description' => $request->description,
-            'type' => $request->type,
-            'from' => ($request->has('from')) ? $request->from : null,
-            'to' => ($request->has('to')) ? $request->to : null,
-        ];
-
-
-        $tags = $request->tag_ids;
-
-        $transaction = Transaction::query()->create($data);
-
-        $transaction->tags()->attach($tags);
-
-
-        // change bank balance
-
-        if ($request->type == 'income') {
-            $bank = Bank::query()->find($request->to);
-
-            $bank->balance += $transaction->amount;
-            $bank->save();
-        }
-
-        if ($request->type == 'cost') {
-            $bank = Bank::query()->find($request->from);
-            if ($request->amount <= $bank->balance) {
-                $bank->balance -= $transaction->amount;
-                $bank->save();
-            } else {
-                throw ValidationException::withMessages(
-                    [
-                        'amount' => 'از سقف زدی بالا'
-                    ]);
-            }
-
-        }
-
-        DB::commit();
-        return $this->created($transaction);
     }
 
-    public function index(Transaction $transactions, Request $request): JsonResponse
+    public function store(CreateTransactionRequest $request): JsonResponse
     {
-        $pagination = $this->pagination($transactions->userTransactions(), $request);
-        return $this->ok((new TransactionCollection($pagination))->resource);
+        $transaction = $this->createTransactionAction->run(TransactionDTO::fromRequest($request));
+
+        return $this->created(TransactionResource::make($transaction));
     }
 
-    public function update(TransactionRequest $request, Transaction $transaction): JsonResponse
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function index(Request $request): JsonResponse
     {
-        $data = [
-            'amount' => $request->amount,
-            'type' => $request->type
-        ];
-
-        $tags = $request->tag_ids;
-
-
-        $transaction->update($data);
-
-        $transaction->tags()->detach();
-        $transaction->tags()->attach($tags);
-
-        return $this->ok($transaction);
+        $transactions = $this->transactionRepository->paginate($request->limit);
+        return $this->ok(
+            TransactionCollection::make($transactions)
+                ->resource
+        );
     }
 
     public function delete(Transaction $transaction): JsonResponse
     {
-        if ($transaction->type == 'cost') {
-            $bank = Bank::query()->find($transaction->from);
-            $bank->balance += $transaction->amount;
-            $bank->save();
-        } else if ($transaction->type == 'income') {
-            $bank = Bank::query()->find($transaction->to);
-            $bank->balance -= $transaction->amount;
-            $bank->save();
-        }
 
-        $transaction->delete();
+        $this->deleteTransactionAction->run($transaction);
 
         return $this->noContent();
     }
 
     public function show(Transaction $transaction): JsonResponse
     {
-        return $this->ok($transaction);
+        $transaction = $this->transactionRepository->getOneByModelBinding($transaction);
+        return $this->ok(
+            TransactionResource::make($transaction)
+        );
     }
 }

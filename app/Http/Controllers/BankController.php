@@ -2,55 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BankRequest;
+use App\Actions\Bank\CreateBankAction;
+use App\Actions\Bank\DeleteBankAction;
+use App\Actions\Bank\UpdateBankAction;
+use App\DTOs\BankDTO;
+use App\Http\Requests\CreateBankRequest;
+use App\Http\Requests\UpdateBankRequest;
+use App\Http\Resources\BankCollection;
+use App\Http\Resources\BankResource;
 use App\Models\Bank;
+use App\Repositories\BankRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class BankController extends Controller
 {
-    public function store(BankRequest $request): \Illuminate\Http\JsonResponse
+    public function __construct(protected CreateBankAction $createBankAction,
+                                protected UpdateBankAction $updateBankAction,
+                                protected DeleteBankAction $deleteBankAction,
+                                protected BankRepository $bankRepository)
     {
-        $data = [
-            'name' => $request->name,
-            'account_number' => $request->account_number,
-            'account_owner' => auth()->id(),
-        ];
-
-        $bank = Bank::create($data);
-
-        return $this->created($bank);
     }
 
+    public function store(CreateBankRequest $request): JsonResponse
+    {
+        $bank = $this->createBankAction->run(BankDTO::fromRequest($request));
+
+        return $this->created(BankResource::make($bank));
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function index(Request $request)
     {
+        $banks = $this->bankRepository->paginate($request->limit, auth()->user()->banks());
 
-        $banks = auth()->user()->banks();
-
-        $pagination = $this->pagination($banks, $request);
-
-        return $this->ok($pagination);
+        return $this->ok(
+            BankCollection::make($banks)
+                ->resource
+        );
     }
 
-    public function show(Bank $bank): \Illuminate\Http\JsonResponse
+    public function show(Bank $bank): JsonResponse
     {
-        return $this->ok($bank);
+        $bank = $this->bankRepository->getOneByModelBinding($bank);
+        return $this->ok(BankResource::make($bank));
     }
 
-    public function update(BankRequest $request, Bank $bank): \Illuminate\Http\JsonResponse
+    public function update(UpdateBankRequest $request, Bank $bank): JsonResponse
     {
-        $data = [
-            'name' => $request->name,
-            'account_number' => $request->account_number,
-            'account_owner' => auth()->id(),
-        ];
-        $bank->update($data);
+        $bank = $this->updateBankAction->run(BankDTO::fromRequest($request), $bank);
 
-        return $this->ok($bank);
+        return $this->ok(BankResource::make($bank));
     }
 
-    public function delete(Bank $bank): \Illuminate\Http\JsonResponse
+    public function delete(Bank $bank): JsonResponse
     {
-        $bank->delete();
+
+        $this->deleteBankAction->run($bank);
+
         return $this->noContent();
     }
 }

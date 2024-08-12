@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class BankRequest extends FormRequest
+class UpdateTagRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +23,8 @@ class BankRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string", "max:100"],
-            "account_number" => ["required", "numeric"],
+            'name' => ['nullable' , 'string' , 'max:255'],
+            'description' => ['nullable' , 'string' , 'max:255'],
         ];
     }
 }

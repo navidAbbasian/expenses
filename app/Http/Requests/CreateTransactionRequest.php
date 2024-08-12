@@ -6,9 +6,8 @@ use App\Enums\TransactionTypeEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use function Laravel\Prompts\table;
 
-class TransactionRequest extends FormRequest
+class CreateTransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,8 +28,12 @@ class TransactionRequest extends FormRequest
             'amount' => ['required'],
             'description' => ['string'],
             'type' => ['required', Rule::in(TransactionTypeEnum::values())],
-            'from' => [Rule::exists(table: 'banks', column: 'id'),],
-            'to' => [Rule::exists(table: 'banks', column: 'id')],
+            'from' => [Rule::exists(table: 'banks', column: 'id'),
+                Rule::prohibitedIf($this->to != null),
+                Rule::prohibitedIf($this->type == 'income')],
+            'to' => [Rule::exists(table: 'banks', column: 'id'),
+                Rule::prohibitedIf($this->from != null),
+                Rule::prohibitedIf($this->type == 'cost')],
         ];
     }
 }

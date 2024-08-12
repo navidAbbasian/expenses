@@ -10,5 +10,5 @@ use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests ,ExpandedResponse, Pagination;
+    use AuthorizesRequests, ValidatesRequests ,ExpandedResponse;
 }

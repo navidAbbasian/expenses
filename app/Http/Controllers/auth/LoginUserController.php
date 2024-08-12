@@ -2,28 +2,20 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Actions\Auth\LoginAction;
+use App\DTOs\UserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class LoginUserController extends Controller
 {
+    public function __construct(protected LoginAction $loginAction)
+    {
+    }
+
     public function store(UserLoginRequest $request){
 
-        // Check email exist
-        $user = User::where('email', $request->email)->first();
-
-        // Check password
-        if(!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        $data['token'] = $user->createToken('auth_token')->plainTextToken;
-        $data['user'] = $user;
+        $data = $this->loginAction->run(userDTO: UserDTO::fromRequest($request));
 
         return $this->ok($data);
     }

@@ -20,6 +20,12 @@ class Tag extends Model
                 $model->user_id = auth()->id();
             }
         });
+
+        static::saving(function ($model){
+            if (Auth::check()) {
+                $model->user_id = auth()->id();
+            }
+        });
     }
     protected $guarded = [];
 

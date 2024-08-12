@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
+use LaravelIdea\Helper\App\Models\_IH_Transaction_QB;
 
 class Transaction extends Model
 {
@@ -17,6 +19,12 @@ class Transaction extends Model
         parent::boot();
 
         static::creating(function ($model) {
+            if (Auth::check()) {
+                $model->user_id = auth()->id();
+            }
+        });
+
+        static::saving(function ($model){
             if (Auth::check()) {
                 $model->user_id = auth()->id();
             }
@@ -45,8 +53,9 @@ class Transaction extends Model
         return $this->belongsTo(related: Bank::class, foreignKey: 'to', ownerKey: 'id');
     }
 
-    public function userTransactions()
+    public function userTransactions(): _IH_Transaction_QB|Builder
     {
+        $transactions = [];
         $banks = Bank::query()->where('account_owner', auth()->user()->id)->get();
         for ($i = 0; $i < count($banks); $i++) {
             $transactions = Transaction::query()->where('to', $banks[$i]->id)->orWhere('from', $banks[$i]->id)/*->with('tags')*/;

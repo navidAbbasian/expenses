@@ -2,52 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TagRequest;
+use App\Actions\Tag\CreateTagAction;
+use App\Actions\Tag\DeleteTagAction;
+use App\Actions\Tag\UpdateTagAction;
+use App\DTOs\TagDTO;
+use App\Http\Requests\CreateTagRequest;
+use App\Http\Resources\TagCollection;
+use App\Http\Resources\TagResource;
 use App\Models\Tag;
+use App\Repositories\TagRepository;
 use Illuminate\Http\Request;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class TagController extends Controller
 {
-    public function store(TagRequest $request)
+    public function __construct(protected CreateTagAction $createTagAction,
+                                protected UpdateTagAction $updateTagAction,
+                                protected DeleteTagAction $deleteTagAction,
+                                protected TagRepository $tagRepository)
     {
-        $data = [
-            'name' => $request->name,
-            'description' => ($request->has('description')) ? $request->description : null,
-        ];
-        $tag = Tag::query()->create($data);
-        return $this->created($tag);
     }
 
+    public function store(CreateTagRequest $request)
+    {
+        $tag = $this->createTagAction->run(TagDTO::fromRequest($request));
+
+        return $this->created(TagResource::make($tag));
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function index(Request $request)
     {
-        $tags = Tag::query();
+        $tags = $this->tagRepository->paginate($request->limit);
 
-        $pagination = $this->pagination($tags, $request);
-
-        return $this->ok($pagination);
+        return $this->ok(
+            TagCollection::make($tags)
+                ->resource
+        );
     }
 
 
     public function show(Tag $tag)
     {
-        return $this->ok($tag);
+        $tag = $this->tagRepository->getOneByModelBinding($tag);
+        return $this->ok(TagResource::make($tag));
     }
 
-    public function update(Tag $tag , TagRequest $request)
+    public function update(Tag $tag , CreateTagRequest $request)
     {
-        $data = [
-            'name' => $request->name,
-            'description' => $request->has('description') ? $request->description : $tag->description,
-        ];
+        $tag = $this->updateTagAction->run(TagDTO::fromRequest($request), $tag);
 
-        $tag->update($data);
-
-        return $this->ok($tag);
+        return $this->ok(TagResource::make($tag));
     }
 
     public function delete(Tag $tag)
     {
-        $tag->delete();
+        $this->deleteTagAction->run($tag);
+
         return $this->noContent();
     }
 }

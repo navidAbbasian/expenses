@@ -2,41 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\User\UpdateUserAction;
+use App\DTOs\UserDTO;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class UserController extends Controller
 {
+    public function __construct(protected UpdateUserAction $updateUserAction,
+                                protected UserRepository $userRepository)
+    {
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function index(Request $request)
     {
         $users = User::query()->with('banks');
-        $pagination = $this->pagination($users, $request);
+        $user = $this->userRepository->paginate($request->limit, $users);
 
-        return $this->ok($pagination);
+        return $this->ok(UserResource::make($user));
     }
 
     public function show()
     {
         $user = auth()->user();
-        return $this->ok($user);
+        return $this->ok(UserResource::make($user));
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $user, UpdateUserRequest $request)
     {
-        $request->validate([
-           'name' => 'nullable|string',
-           'email' => 'nullable|string|email|unique:users,email,' . $user->id,
-           'number' => 'nullable|string|unique:users,number,' . $user->id,
-           'password' => 'nullable|string',
-        ]);
-
-        $user->name = $request->has('name') ? $request->name : $user->name;
-        $user->email = $request->has('email') ? $request->email : $user->email;
-        $user->number = $request->has('number') ? $request->number : $user->number;
-        $user->password = $request->has('password') ? $request->password : $user->password;
-
-        $user->save();
-
-        return $this->ok($user);
+        $user = $this->updateUserAction->run(UserDTO::fromRequest($request), $user);
+        return $this->ok(UserResource::make($user));
     }
 }
