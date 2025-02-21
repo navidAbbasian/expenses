@@ -6,11 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "filament/forms": "^2.0",
-        "filament/tables": "^2.0",
         "flowframe/laravel-trend": "^0.2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
+        "laravel/reverb": "^1.4",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "spatie/laravel-query-builder": "^6.0"

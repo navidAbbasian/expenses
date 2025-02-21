@@ -19,6 +19,7 @@ abstract class Repository implements RepositoryInterface
 
     protected int $paginationLimit;
 
+
     /**
      * The object of the class on which the query is applied
      */
@@ -92,16 +93,16 @@ abstract class Repository implements RepositoryInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function paginate(?int $limit = null, $eloquentQuery = null): LengthAwarePaginator|Collection
+    public function paginate(?int $limit = null, $callback = null): LengthAwarePaginator|Collection
     {
         $this->paginationLimit = config('app.paginate_limit');
 
-        $eloquentQuery = $eloquentQuery ?? $this->model;
+        $query = $callback ? $this->model::where($callback) : $this->model;
 
         if ($limit === 0) {
-            return $eloquentQuery->get();
+            return $query->get();
         }
 
-        return $eloquentQuery->paginate($limit ?? $this->paginationLimit);
+        return $query->paginate($limit ?? $this->paginationLimit);
     }
 }

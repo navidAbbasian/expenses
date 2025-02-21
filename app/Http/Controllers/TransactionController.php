@@ -36,7 +36,10 @@ class TransactionController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $transactions = $this->transactionRepository->paginate($request->limit);
+        $callback = function ($query) {
+            $query->where('user_id', auth()->id());
+        };
+        $transactions = $this->transactionRepository->paginate($request->limit, $callback);
         return $this->ok(
             TransactionCollection::make($transactions)
                 ->resource

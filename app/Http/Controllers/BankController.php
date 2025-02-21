@@ -20,9 +20,9 @@ use Psr\Container\NotFoundExceptionInterface;
 class BankController extends Controller
 {
     public function __construct(protected CreateBankAction $createBankAction,
-                                protected UpdateBankAction $updateBankAction,
+                                protected UpdateBankAction     $updateBankAction,
                                 protected DeleteBankAction $deleteBankAction,
-                                protected BankRepository $bankRepository)
+                                protected BankRepository       $bankRepository)
     {
     }
 
@@ -39,7 +39,10 @@ class BankController extends Controller
      */
     public function index(Request $request)
     {
-        $banks = $this->bankRepository->paginate($request->limit, auth()->user()->banks());
+        $callback = function ($query) {
+            $query->where('user_id', auth()->id());
+        };
+        $banks = $this->bankRepository->paginate($request->limit, $callback);
 
         return $this->ok(
             BankCollection::make($banks)

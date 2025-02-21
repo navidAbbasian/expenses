@@ -37,7 +37,10 @@ class TagController extends Controller
      */
     public function index(Request $request)
     {
-        $tags = $this->tagRepository->paginate($request->limit);
+        $callback = function ($query) {
+            $query->where('user_id', auth()->id());
+        };
+        $tags = $this->tagRepository->paginate($request->limit, $callback);
 
         return $this->ok(
             TagCollection::make($tags)
