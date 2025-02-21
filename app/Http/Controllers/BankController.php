@@ -20,9 +20,9 @@ use Psr\Container\NotFoundExceptionInterface;
 class BankController extends Controller
 {
     public function __construct(protected CreateBankAction $createBankAction,
-                                protected UpdateBankAction $updateBankAction,
+                                protected UpdateBankAction     $updateBankAction,
                                 protected DeleteBankAction $deleteBankAction,
-                                protected BankRepository $bankRepository)
+                                protected BankRepository       $bankRepository)
     {
     }
 

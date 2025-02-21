@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\User\UpdateUserAction;
 use App\DTOs\UserDTO;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
@@ -26,9 +27,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::query()->with('banks');
-        $user = $this->userRepository->paginate($request->limit, $users);
+        $paginatedUsers = $this->userRepository->paginate($request->limit, $users);
 
-        return $this->ok(UserResource::make($user));
+        return $this->ok(UserCollection::make($paginatedUsers));
     }
 
     public function show()
